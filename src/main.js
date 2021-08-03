@@ -45,16 +45,13 @@ render(films, createMostCommentFilmsTemplate(), 'beforeend');
 
 const filmsListExtra = films.querySelectorAll('.films-list--extra');
 
-filmsListExtra.forEach((item, i) => {
-    let filmsListContainerExtra = item.querySelector('.films-list__container');
-    for (let j = 0; j < FILM_SPECIAL_COUNT; j++) {
-      render(filmsListContainerExtra, createCardFilmTemplate(), 'beforeend');
-    }
+filmsListExtra.forEach((item) => {
+  const filmsListContainerExtra = item.querySelector('.films-list__container');
+  for (let j = 0; j < FILM_SPECIAL_COUNT; j++) {
+    render(filmsListContainerExtra, createCardFilmTemplate(), 'beforeend');
   }
-);
+});
+
 //Подробная информация о фильме (попап)
 const bodySite = document.querySelector('body');
 render(bodySite, createFilmDetailsTemplate(), 'beforeend');
-
-
-

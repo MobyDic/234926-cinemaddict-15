@@ -8,4 +8,4 @@ export const createSiteMenuTemplate = () => (
     </div>
     <a href="#stats" class="main-navigation__additional main-navigation__additional--active">Stats</a>
   </nav>`
-  );
+);
