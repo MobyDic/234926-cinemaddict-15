@@ -1,4 +1,6 @@
-export const createFilmDetailsTemplate = (task) => {
+import {createElement} from '../utils.js';
+
+const createFilmDetailsTemplate = (task) => {
   const {
     poster,
     age,
@@ -142,3 +144,26 @@ export const createFilmDetailsTemplate = (task) => {
     </form>
   </section>`;
 };
+
+export default class FilmDetails {
+  constructor(task) {
+    this._element = null;
+    this._task = task;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

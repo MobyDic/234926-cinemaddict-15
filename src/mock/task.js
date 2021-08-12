@@ -247,4 +247,7 @@ export const generateTask = () => ({
   actors:  generatePersons(3),
   country: generateСountries(),
   comments: generateComents(),
+  isWatchList: Boolean(getRandomInteger(0, 1)),
+  isAlreadyWatched: Boolean(getRandomInteger(0, 1)),
+  isFavorite: Boolean(getRandomInteger(0, 1)),
 });

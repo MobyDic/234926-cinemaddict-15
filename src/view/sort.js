@@ -1,11 +1,11 @@
 import {createElement} from '../utils.js';
 
-const createTopRateFilmsTemplate = () => (
-  `<section class="films-list films-list--extra">
-    <h2 class="films-list__title">Top rated</h2>
-    <div class="films-list__container">
-    </div>
-  </section>`
+const createSortTemplate = () => (
+  `<ul class="sort">
+    <li><a href="#" class="sort__button">Sort by default</a></li>
+    <li><a href="#" class="sort__button">Sort by date</a></li>
+    <li><a href="#" class="sort__button sort__button--active">Sort by rating</a></li>
+  </ul>`
 );
 
 export default class Filter {
@@ -14,7 +14,7 @@ export default class Filter {
   }
 
   getTemplate() {
-    return createTopRateFilmsTemplate();
+    return createSortTemplate();
   }
 
   getElement() {
