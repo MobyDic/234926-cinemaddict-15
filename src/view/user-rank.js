@@ -1,6 +1,51 @@
-export const createUserRankTemplate = () => (
-  `<section class="header__profile profile">
-    <p class="profile__rating">Movie Buff</p>
+import {createElement} from '../utils.js';
+
+const createUserRankTemplate = (filtersItem) => {
+
+  const countHistory = filtersItem.filter((item) => {
+    if (item.name === 'History'){
+      return item;
+    }
+  })[0].count;
+
+
+  let profileRating = '';
+  if (countHistory >=1 && countHistory <=10) {
+    profileRating = 'Novice';
+  }
+  else if (countHistory >=11 && countHistory <=20) {
+    profileRating = 'Fan';
+  }
+  else if (countHistory > 20) {
+    profileRating = 'Movie Buff';
+  }
+
+
+  return `<section class="header__profile profile">
+    <p class="profile__rating">${profileRating}</p>
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-  </section>`
-);
+  </section>`;
+};
+
+export default class UserRank {
+  constructor(filters) {
+    this._element = null;
+    this._filters = filters;
+  }
+
+  getTemplate() {
+    return createUserRankTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
