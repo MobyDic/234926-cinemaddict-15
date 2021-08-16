@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const createFilmDetailsTemplate = (task) => {
   const {
@@ -145,25 +145,25 @@ const createFilmDetailsTemplate = (task) => {
   </section>`;
 };
 
-export default class FilmDetails {
+export default class FilmDetails extends AbstractView {
   constructor(task) {
-    this._element = null;
+    super();
     this._task = task;
+    this._closeBtnClickHandler = this._closeBtnClickHandler.bind(this);
+
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._task);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _closeBtnClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setCloseBtnClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeBtnClickHandler);
   }
 }
