@@ -9,12 +9,12 @@ import MostCommentFilmsView from './view/most-comment-films.js';
 import FilmDetailsView from './view/film-details.js';
 import NoFilmsView from './view/no-films.js';
 import {generateTask} from './mock/task.js';
-import {render, RenderPosition} from './utils.js';
+import {render, RenderPosition, append, remove} from './utils/render.js';
 import {generateFilter} from './mock/filter.js';
 
 
 const FILM_SPECIAL_COUNT = 2;
-const TASK_COUNT = 20;
+const TASK_COUNT = 18;
 const TASK_COUNT_PER_STEP = 5;
 
 
@@ -26,19 +26,19 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 
 //Ранг пользователя
-render(siteHeaderElement, new UserRankView(filters).getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new UserRankView(filters), RenderPosition.BEFOREEND);
 
 //Фильтры, сортировка
-render(siteMainElement, new SiteMenuView(filters).getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new SiteMenuView(filters), RenderPosition.BEFOREEND);
 
 if (tasks.length === 0) {
   //Заглушка, если фильмы не найдены
-  render(siteMainElement, new NoFilmsView().getElement(), RenderPosition.BEFOREEND);
+  render(siteMainElement, new NoFilmsView(), RenderPosition.BEFOREEND);
 } else {
-  render(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+  render(siteMainElement, new SortView(), RenderPosition.BEFOREEND);
 
   //Основной список фильмов
-  render(siteMainElement, new FilmsView().getElement(), RenderPosition.BEFOREEND);
+  render(siteMainElement, new FilmsView(), RenderPosition.BEFOREEND);
 
   const films = siteMainElement.querySelector('.films');
   const filmsList = siteMainElement.querySelector('.films-list');
@@ -54,42 +54,42 @@ if (tasks.length === 0) {
     const taskComponent = new CardFilmView(task);
     const taskDetailsComponent = new FilmDetailsView(task);
 
-    render(taskListContainer, taskComponent.getElement(), RenderPosition.BEFOREEND);
+    render(taskListContainer, taskComponent, RenderPosition.BEFOREEND);
 
     //Функция события для закрытие попапа по нажатию на Esc
     const onEscKeyDown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
-        bodySite.removeChild(taskDetailsComponent.getElement());
+        remove(taskDetailsComponent, bodySite);
         document.removeEventListener('keydown', onEscKeyDown);
       }
     };
 
     //событие для открытия попапа по клику на заголовок
     //добавляет слушатель для закрытия попапа по нажатию ESC
-    taskComponent.getElement().querySelector('.film-card__title').addEventListener('click', () => {
-      bodySite.appendChild(taskDetailsComponent.getElement());
+    taskComponent.setTitleClickHandler(() => {
+      append(taskDetailsComponent, bodySite);
       document.addEventListener('keydown', onEscKeyDown);
     });
 
     //событие для открытия попапа по клику на постер
     //добавляет слушатель для закрытия попапа по нажатию ESC
-    taskComponent.getElement().querySelector('.film-card__poster').addEventListener('click', () => {
-      bodySite.appendChild(taskDetailsComponent.getElement());
+    taskComponent.setPosterClickHandler(() => {
+      append(taskDetailsComponent, bodySite);
       document.addEventListener('keydown', onEscKeyDown);
     });
 
     //событие для открытия попапа по клику на комментарии
     //добавляет слушатель для закрытия попапа по нажатию ESC
-    taskComponent.getElement().querySelector('.film-card__comments').addEventListener('click', () => {
-      bodySite.appendChild(taskDetailsComponent.getElement());
+    taskComponent.setCommentClickHandler(() => {
+      append(taskDetailsComponent, bodySite);
       document.addEventListener('keydown', onEscKeyDown);
     });
 
     //событие для закрытия попапа по клику на кнопку закрытия
     //удаляет слушатель для закрытия попапа по нажатию ESC
-    taskDetailsComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', () => {
-      bodySite.removeChild(taskDetailsComponent.getElement());
+    taskDetailsComponent.setCloseBtnClickHandler(() => {
+      remove(taskDetailsComponent, bodySite);
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
@@ -104,12 +104,10 @@ if (tasks.length === 0) {
     let renderTemplateedTaskCount = TASK_COUNT_PER_STEP;
 
     //Кнопка show more
-    render(filmsList, new ShowMoreButtonView().getElement(), RenderPosition.BEFOREEND);
+    const loadMoreButtonComponent = new ShowMoreButtonView();
+    render(filmsList, loadMoreButtonComponent, RenderPosition.BEFOREEND);
 
-    const loadMoreButton = filmsList.querySelector('.films-list__show-more');
-
-    loadMoreButton.addEventListener('click', (evt) => {
-      evt.preventDefault();
+    loadMoreButtonComponent.setClickHandler(() => {
 
       tasks
         .slice(renderTemplateedTaskCount, renderTemplateedTaskCount + TASK_COUNT_PER_STEP)
@@ -118,15 +116,15 @@ if (tasks.length === 0) {
       renderTemplateedTaskCount += TASK_COUNT_PER_STEP;
 
       if (renderTemplateedTaskCount >= tasks.length) {
-        loadMoreButton.remove();
+        remove(loadMoreButtonComponent, filmsList);
       }
 
     });
   }
 
   //Топ фильмы, комментируемые фильмы
-  render(films, new TopRateFilmsView().getElement(), RenderPosition.BEFOREEND);
-  render(films, new MostCommentFilmsView().getElement(), RenderPosition.BEFOREEND);
+  render(films, new TopRateFilmsView(), RenderPosition.BEFOREEND);
+  render(films, new MostCommentFilmsView(), RenderPosition.BEFOREEND);
 
   const filmsListExtra = films.querySelectorAll('.films-list--extra');
 
